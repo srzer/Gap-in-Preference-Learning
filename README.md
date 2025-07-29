@@ -1,5 +1,5 @@
 # Understanding the Performance Gap in Preference Learning
-This repo provides code for the paper ["Understanding the Performance Gap in Preference Learning: A Dichotomy of RLHF and DPO"](https://arxiv.org/pdf/2505.19770). By now, we have only released the code for *verifications of Section 4*. And for *verifications of Section 3*, you could refer to the codebase of [Online-RLHF](https://github.com/RLHFlow/Online-RLHF). ***If you find any issue in reproduction, feel free to create an issue!***
+This repo provides code for the paper ["Understanding the Performance Gap in Preference Learning: A Dichotomy of RLHF and DPO"](https://arxiv.org/pdf/2505.19770). By now, we have released the code for *verifications of Section 4*. And for *verifications of Section 3*, you could refer to the codebase of [Online-RLHF](https://github.com/RLHFlow/Online-RLHF) (our implementation with minimal mofications is available upon email request). ***If you find any issue in reproduction, feel free to create an issue!***
 
 ## 🔨 Set up
 This part is directly based on [modpo](https://github.com/ZHZisZZ/modpo). 
