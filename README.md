@@ -14,7 +14,7 @@ This part is directly based on [Online-RLHF](https://github.com/RLHFlow/Online-R
 create -n rlhflow python=3.10
 conda activate rlhflow
 pip install -r requirements.txt
-pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/test/cu118
+pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu121
 ```
 
 ### 🏄 Pipeline
