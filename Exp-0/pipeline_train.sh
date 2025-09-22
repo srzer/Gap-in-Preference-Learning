@@ -1,6 +1,8 @@
 . "$HOME/miniconda3/etc/profile.d/conda.sh"
 
 conda activate rlhflow
+bash scripts/safe_rlhf/gen_dpo.sh 1 2
+bash scripts/annotate.sh 1 dpo 2
 bash scripts/safe_rlhf/dpo_online.sh 1
 bash scripts/safe_rlhf/gen_dpo.sh 2 2
 bash scripts/annotate.sh 2 dpo 2
