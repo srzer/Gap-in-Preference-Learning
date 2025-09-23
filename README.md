@@ -112,7 +112,7 @@ And finally you can compare the evaluation accuracy which would be reported once
 ## 🏷️ License
 This repo is licensed under the MIT license. See the LICENSE file for details.
 
-📝 Citation
+## 📝 Citation
 If you find our work useful, please consider citing:
 
 ```
