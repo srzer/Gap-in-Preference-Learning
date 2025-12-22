@@ -1,16 +1,16 @@
 # Understanding the Performance Gap in Preference Learning
-This repo provides code for the paper ["Understanding the Performance Gap in Preference Learning: A Dichotomy of RLHF and DPO"](https://arxiv.org/pdf/2505.19770). The codebase is composed of two parts: 1) *verifications of Section 3*, which implements online DPO and simple RL; 2) *verifications of Section 4*, which implements DPO and reward modeling. ***If you find any issue in reproduction, feel free to create an issue!***
+本仓库提供了论文["Understanding the Performance Gap in Preference Learning: A Dichotomy of RLHF and DPO"](https://arxiv.org/pdf/2505.19770)的代码实现。主要分为两个部分 1) *对论文第三节结论的验证*，实现了在线DPO和简洁RL的对比；2) *对论文第四节结论的验证*，实现了DPO和奖励建模的对比。 ***如果你在复现中发现任何问题，请提出issue，我们会及时回复！***
 
-[中文版](./README_zh.md)
+[English](./README.md)
 
-## Exp-0: Verifications of Section 3
+## Exp-0: 对论文第三节结论的验证
 
 ```bash
 cd Exp-0
 ```
 
-### 🔨 Set up
-This part is directly based on [Online-RLHF](https://github.com/RLHFlow/Online-RLHF).
+### 🔨 基础设置
+这一部分主要基于[Online-RLHF](https://github.com/RLHFlow/Online-RLHF)。
 
 ```bash
 create -n rlhflow python=3.10
@@ -19,70 +19,70 @@ pip install -r requirements.txt
 pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu121
 ```
 
-### 🏄 Pipeline
+### 🏄 工作流
 
-#### 🐜 Model initialization
+#### 🐜 模型初始化
 
-You could directly use our released SFT model `zhezi12138/gpt2-large_sft_model` on huggingface as the initial model. Download it and save as `models/sft_model`. The SFT script is also provided as `scripts/safe_rlhf/sft.sh`.
+你可以直接使用我们在huggingface上公开的初始模型`zhezi12138/gpt2-large_sft_model`。下载并保存为`models/sft_model`即可。我们也提供了SFT的训练脚本：`scripts/safe_rlhf/sft.sh`.
 
-#### 🐝 Iterative data generation and annotation
+#### 🐝 迭代数据生成与标注
 
-Generation for DPO model:
+DPO模型的生成：
 ```bash
 bash scripts/safe_rlhf/gen_dpo.sh ${iter_number} ${#responses per prompt} # the response number is set as 2 in our experiments
 ```
 
-Generation for RL model:
+RL模型的生成：
 ```bash
 bash scripts/safe_rlhf/gen_pg.sh ${iter_number} ${#responses per prompt} # the response number is set as 2 in our experiments; when iter_number=1, it is equivalent to DPO generation.
 ```
 
-Annotation for DPO data:
+DPO模型生成数据的标注：
 ```bash
 bash scripts/annotate.sh ${iter_number} dpo ${responses per prompt} # the response number is set as 2 in our experiments
 ```
 
-We provide a weak (mis-specified) reward model `zhezi12138/weak_rm_gpt2-large_harmless` on huggingface to simulate reward mis-specification.
+我们还在huggingface上公开了一个弱奖励模型 `zhezi12138/weak_rm_gpt2-large_harmless`，来模拟奖励模型误设的情况。
 
-Annotation for RL data:
+RL模型生成数据的标注：
 ```bash
 bash scripts/annotate.sh ${iter_number} pg ${responses per prompt} # the response number is set as 2 in our experiments
 bash scripts/annotate_weak.sh ${iter_number} pg ${responses per prompt} # annotation with reward model mis-specification
 ```
 
-#### 🐧 Iterative training
+#### 🐧 迭代训练
 
-For online DPO training:
+在线DPO的训练：
 ```bash
 conda activate rlhflow
 bash scripts/safe_rlhf/dpo_online.sh ${iter_number} # no policy model mis-specification
 bash scripts/safe_rlhf/dpo_online_mis.sh ${iter_number} # with policy model mis-specification
 ```
 
-For RL training:
+RL的训练：
 ```bash
 conda activate rlhflow
 bash scripts/safe_rlhf/pg.sh ${iter_number} # no policy model mis-specification
 bash scripts/safe_rlhf/pg_mis.sh ${iter_number} # with policy model mis-specification
 ```
 
-#### 🐤 Evaluation
-To test the DPO/RL model, the command is:
+#### 🐤 评估
+测试DPO/RL模型的指令为：
 ```bash
 bash scripts/safe_rlhf/gen_test.sh 0 ${here `dpo` or `pg`} ${iter_number}
 bash scripts/annotate_test.sh 0 ${here `dpo` or `pg`} ${iter_number}
 ```
 
-Samples of iterative training pipeline are provided as `scirpts/pipeline_train.sh` and `scripts/pipeline_train_mis.sh`, and a sample of evaluation is provided as `scripts/pipeline_test.sh`. 
+最后，我们也提供了迭代训练工作流的多合一脚本：`scirpts/pipeline_train.sh` 和 `scripts/pipeline_train_mis.sh`，以及评估脚本：`scripts/pipeline_test.sh`。
 
-## Exp-1: Verifications of Section 4
+## Exp-1: 对论文第四节结论的验证
 
 ```bash
 cd Exp-1
 ```
 
-### 🔨 Set up
-This part is directly based on [modpo](https://github.com/ZHZisZZ/modpo). 
+### 🔨 基础设置
+这一部分主要基于[modpo](https://github.com/ZHZisZZ/modpo)。
 
 ```bash
 create -n rml python=3.10
@@ -91,31 +91,31 @@ pip install -r requirements.txt
 pip install torch=2.1.0 --index-url https://download.pytorch.org/whl/cu118
 ```
 
-### 🏄 Pipeline
+### 🏄 工作流
 
-#### 🍎 DPO
+#### 🍎 DPO训练
 
 ```bash
 bash scripts/dpo/run.sh ${data size} ${seed number}
 ```
-In our paper, we adopt data size as 1000,2000,4000,9000, and seed number as 41,42,43.
+在我们的论文中，我们主要采用了1000,2000,4000,9000的数据规模，和41,42,43的随机种子。
 
-#### 🍏 RM
+#### 🍏 奖励建模训练
  
 ```bash
 bash scripts/rm/run.sh ${data size} ${seed number}
 ```
-In our paper, we adopt data size as 1000,2000,4000,9000, and seed number as 41,42,43.
+在我们的论文中，我们主要采用了1000,2000,4000,9000的数据规模，和41,42,43的随机种子。
 
-*Note that the default preference objective is 'better'. And you can change to 'safer' by modifying the 3rd line of the scripts.*
+*请注意训练采用的默认偏好目标为'better'，你可以修改脚本的第三行来将其改成'safer'。*
 
-And finally you can compare the evaluation accuracy which would be reported once training terminates.
+在训练结束时，评估准确率会被自动报告。
 
-## 🏷️ License
-This repo is licensed under the MIT license. See the LICENSE file for details.
+## 🏷️ 证书
+本仓库使用MIT证书。
 
 ## 📝 Citation
-If you find our work useful, please consider citing:
+如果我们的工作对你的研究有帮助，可以考虑引用本论文，谢谢：
 
 ```
 @article{shi2025understandingperformancegappreference,
